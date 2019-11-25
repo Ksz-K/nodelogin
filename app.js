@@ -2,6 +2,9 @@ const express = require("express");
 const path = require("path");
 const app = express();
 const bodyParser = require("body-parser");
+const expressValidator = require("express-validator");
+const flash = require("connect-flash");
+const session = require("express-session");
 
 let Article = require("./models/article");
 
@@ -12,6 +15,42 @@ let db = mongoose.connection;
 
 //set public folder
 app.use(express.static(path.join(__dirname, "public")));
+
+//expresss sesssion middleware
+app.use(
+  session({
+    secret: "keyboard cat",
+    resave: true,
+    saveUninitialized: true
+    // cookie: { secure: true }
+  })
+);
+
+//express MESSAGES middleware
+app.use(require("connect-flash")());
+app.use(function(req, res, next) {
+  res.locals.messages = require("express-messages")(req, res);
+  next();
+});
+
+//Express VAlidator Middleware
+app.use(
+  expressValidator({
+    errorFormatter: function(param, msg, value) {
+      var namespace = param.split("."),
+        root = namespace.shift(),
+        formParam = root;
+      while (namespace.length) {
+        formParam += "[" + namespace.shift() + "]";
+      }
+      return {
+        param: formParam,
+        msg: msg,
+        value: value
+      };
+    }
+  })
+);
 
 db.once("open", () => {
   console.log("Mongo podlaczone...");
@@ -83,7 +122,7 @@ app.get("/articles/add", (req, res) => {
   });
 });
 
-//add submit routes
+//add submit POST routes
 app.post("/articles/add", (req, res) => {
   let article = new Article();
   article.title = req.body.title;
@@ -95,6 +134,7 @@ app.post("/articles/add", (req, res) => {
       console.log(err);
       return;
     } else {
+      req.flash("success", "Article added");
       res.redirect("/");
     }
   });
@@ -125,6 +165,7 @@ app.post("/articles/edit/:id", (req, res) => {
       console.log(err);
       return;
     } else {
+      req.flash("success", "Article updated");
       res.redirect("/");
     }
   });
