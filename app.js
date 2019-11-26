@@ -6,6 +6,7 @@ const expressValidator = require("express-validator");
 const flash = require("connect-flash");
 const session = require("express-session");
 
+//bring model
 let Article = require("./models/article");
 
 const mongoose = require("mongoose");
@@ -69,6 +70,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
 
+//HOME ROUTE
 app.get("/", (req, res) => {
   Article.find({}, (err, articles) => {
     if (err) {
@@ -107,80 +109,9 @@ app.get("/", (req, res) => {
   }); */
 });
 
-//get single article
-app.get("/article/:id", (req, res) => {
-  Article.findById(req.params.id, (err, article) => {
-    res.render("article", {
-      article: article
-    });
-  });
-});
-
-app.get("/articles/add", (req, res) => {
-  res.render("add_article", {
-    title: "Add article"
-  });
-});
-
-//add submit POST routes
-app.post("/articles/add", (req, res) => {
-  let article = new Article();
-  article.title = req.body.title;
-  article.author = req.body.author;
-  article.body = req.body.body;
-
-  article.save(err => {
-    if (err) {
-      console.log(err);
-      return;
-    } else {
-      req.flash("success", "Article added");
-      res.redirect("/");
-    }
-  });
-});
-
-//LOAD edit form
-app.get("/article/edit/:id", (req, res) => {
-  Article.findById(req.params.id, (err, article) => {
-    res.render("edit_article", {
-      title: "Edit Article",
-      article: article
-    });
-  });
-});
-
-//UPDATE submit
-app.post("/articles/edit/:id", (req, res) => {
-  let article = {};
-
-  article.title = req.body.title;
-  article.author = req.body.author;
-  article.body = req.body.body;
-
-  let query = { _id: req.params.id };
-
-  Article.update(query, article, err => {
-    if (err) {
-      console.log(err);
-      return;
-    } else {
-      req.flash("success", "Article updated");
-      res.redirect("/");
-    }
-  });
-});
-
-//obsluga DELETE
-app.delete("/article/:id", function(req, res) {
-  let query = { _id: req.params.id };
-  Article.deleteOne(query, function(error) {
-    if (error) {
-      console.log(error);
-    }
-    res.send("Success");
-  });
-});
+//ROUTE files
+let articles = require("./routes/articles");
+app.use("/articles", articles);
 
 //start server
 app.listen(3000, () => {
