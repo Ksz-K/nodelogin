@@ -5,13 +5,16 @@ const bodyParser = require("body-parser");
 const expressValidator = require("express-validator");
 const flash = require("connect-flash");
 const session = require("express-session");
+const passport = require("passport");
+const config = require("./config/database");
 
 //bring model
 let Article = require("./models/article");
 
 const mongoose = require("mongoose");
 mongoose.set("useUnifiedTopology", true);
-mongoose.connect("mongodb://localhost/nodekb", { useNewUrlParser: true });
+//mongoose.connect("mongodb://localhost/nodekb", { useNewUrlParser: true });
+mongoose.connect(config.database, config.newparser);
 let db = mongoose.connection;
 
 //set public folder
@@ -69,6 +72,17 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // parse application/json
 app.use(bodyParser.json());
+
+//Passport config
+require("./config/passport")(passport);
+//Passport middleware
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.get("*", (req, res, next) => {
+  res.locals.user = req.user || null;
+  next();
+});
 
 //HOME ROUTE
 app.get("/", (req, res) => {
