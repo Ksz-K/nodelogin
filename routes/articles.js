@@ -3,8 +3,10 @@ const router = express.Router();
 
 //bring model
 let Article = require("../models/article");
+let User = require("../models/user");
 
-router.get("/add", (req, res) => {
+//adddd route
+router.get("/add", ensureAuthenticated, (req, res) => {
   res.render("add_article", {
     title: "Add article"
   });
@@ -13,7 +15,7 @@ router.get("/add", (req, res) => {
 //add submit POST routes
 router.post("/add", (req, res) => {
   req.checkBody("title", "Title is required").notEmpty();
-  req.checkBody("author", "Author is required").notEmpty();
+  //req.checkBody("author", "Author is required").notEmpty();
   req.checkBody("body", "Article text content is required").notEmpty();
 
   //Get errrrror
@@ -27,7 +29,8 @@ router.post("/add", (req, res) => {
   } else {
     let article = new Article();
     article.title = req.body.title;
-    article.author = req.body.author;
+    //article.author = req.body.author;
+    article.author = req.user._id;
     article.body = req.body.body;
 
     article.save(err => {
@@ -43,12 +46,17 @@ router.post("/add", (req, res) => {
 });
 
 //LOAD edit form
-router.get("/edit/:id", (req, res) => {
+router.get("/edit/:id", ensureAuthenticated, (req, res) => {
   Article.findById(req.params.id, (err, article) => {
-    res.render("edit_article", {
-      title: "Edit Article",
-      article: article
-    });
+    if (article.author == req.user._id) {
+      res.render("edit_article", {
+        title: "Edit Article",
+        article: article
+      });
+    } else {
+      req.flash("danger", "U R not authorized");
+      res.redirect("/");
+    }
   });
 });
 
@@ -75,21 +83,46 @@ router.post("/edit/:id", (req, res) => {
 
 //obsluga DELETE
 router.delete("/:id", function(req, res) {
+  if (!req.user._id) {
+    res.status(500).send();
+  }
+
   let query = { _id: req.params.id };
-  Article.deleteOne(query, function(error) {
-    if (error) {
-      console.log(error);
+
+  Article.findById(req.params.id, (err, article) => {
+    if (article.author != req.user._id) {
+      res.status(500).send();
+    } else {
+      Article.deleteOne(query, function(error) {
+        if (error) {
+          console.log(error);
+        }
+        res.send("Success");
+      });
     }
-    res.send("Success");
   });
 });
 
 //get single article
 router.get("/:id", (req, res) => {
   Article.findById(req.params.id, (err, article) => {
-    res.render("article", {
-      article: article
+    User.findById(article.author, (err, user) => {
+      res.render("article", {
+        article: article,
+        author: user.name
+      });
     });
   });
 });
+
+//Accesss contrrrol
+function ensureAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  } else {
+    req.flash("danger", "Please login");
+    res.redirect("/users/login");
+  }
+}
+
 module.exports = router;
