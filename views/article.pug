@@ -1,11 +1,11 @@
 extends layout
 
 block content
-    h1=article.title 
-    h5 Written by #{author}
+    h3=article.title 
+    h5 Uworzone przez #{author}
     p=article.body
     hr
     if user
         if user.id==article.author
-            a.btn.btn-success(href='/articles/edit/'+article._id) Edit
-            a.btn.btn-danger.delete-article(href='#', data-id=article._id)  DELete
+            a.btn.btn-success(href='/articles/edit/'+article._id) Edycja
+            a.btn.btn-danger.delete-article(href='#', data-id=article._id)  Usuń

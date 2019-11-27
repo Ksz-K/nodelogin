@@ -23,7 +23,7 @@ router.post("/add", (req, res) => {
 
   if (errors) {
     res.render("add_article", {
-      title: "Add Article",
+      title: "Dodaj swoje pytanie oraz odpowiedź",
       errors: errors
     });
   } else {
@@ -50,7 +50,7 @@ router.get("/edit/:id", ensureAuthenticated, (req, res) => {
   Article.findById(req.params.id, (err, article) => {
     if (article.author == req.user._id) {
       res.render("edit_article", {
-        title: "Edit Article",
+        title: "Edycja Twojego wpisu",
         article: article
       });
     } else {
@@ -75,7 +75,7 @@ router.post("/edit/:id", (req, res) => {
       console.log(err);
       return;
     } else {
-      req.flash("success", "Article updated");
+      req.flash("success", "Wpis zaktualizowano");
       res.redirect("/");
     }
   });
@@ -120,7 +120,7 @@ function ensureAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
     return next();
   } else {
-    req.flash("danger", "Please login");
+    req.flash("danger", "Wymagane logowanie");
     res.redirect("/users/login");
   }
 }

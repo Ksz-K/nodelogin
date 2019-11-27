@@ -51,7 +51,10 @@ router.post("/register", (req, res) => {
             console.log(err);
             return;
           } else {
-            req.flash("success", "U R now registered and can log in");
+            req.flash(
+              "success",
+              "Zostałeś zarejestrowany. Możesz się zalogować."
+            );
             res.redirect("/users/login");
           }
         });
@@ -77,7 +80,7 @@ router.post("/login", function(req, res, next) {
 //Logout process
 router.get("/logout", (req, res) => {
   req.logout();
-  req.flash("success", "U R logged out");
+  req.flash("success", "Wylogowanie OK");
   res.redirect("/users/login");
 });
 module.exports = router;

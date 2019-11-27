@@ -1,40 +1,36 @@
 doctype html
 html
     head
-        title KnowledgeBase
+        title PORTAL Pytanie/Odpowiedź
         link(rel='stylesheet' href='/bower_components/bootstrap/dist/css/bootstrap.css')
         link(rel='stylesheet' href='/css/style.css')
     body
         nav.navbar.navbar-expand-md.navbar-dark.bg-dark
-            a.navbar-brand(href='#') KnowledgeBase
+            a.navbar-brand(href='#')
+                img(src='https://kszk.vot.pl/kszk.png', alt='logo')
             button.navbar-toggler(type='button', data-toggle='collapse', data-target='#navbarsExampleDefault', aria-controls='navbarsExampleDefault', aria-expanded='false', aria-label='Toggle navigation')
                 span.navbar-toggler-icon
             #navbarsExampleDefault.collapse.navbar-collapse
                 ul.navbar-nav.mr-auto
                     li.nav-item
                         a.nav-link(href='/')
-                            | Home 
+                            | Start 
                             span.sr-only (current)
                     if user        
                         li.nav-item
-                            a.nav-link(href='/articles/add') Add Article
+                            a.nav-link(href='/articles/add') Dodaj pytanie
                     if user
                         li.nav-item
-                            a.nav-link(href='/users/logout') log-out
+                            a.nav-link(href='/users/logout') Wylogowanie
                     else    
                         li.nav-item
-                            a.nav-link(href='/users/register') Register
+                            a.nav-link(href='/users/register') Zarejestruj
                         li.nav-item
-                            a.nav-link(href='/users/login') Log-in
-                        li.nav-item.dropdown
-                            a#dropdown01.nav-link.dropdown-toggle(href='#', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false') Dropdown
-                            .dropdown-menu(aria-labelledby='dropdown01')
-                                a.dropdown-item(href='#') Action
-                                a.dropdown-item(href='#') Another action
-                                a.dropdown-item(href='#') Something else here
-                form.form-inline.my-2.my-lg-0
-                    input.form-control.mr-sm-2(type='text', placeholder='Search', aria-label='Search')
-                    button.btn.btn-outline-success.my-2.my-sm-0(type='submit') Search        
+                            a.nav-link(href='/users/login') Login
+                ul.nav.navbar-nav.navbar-right
+                    li
+                        |PORTAL z niełatwymi pytaniami i niekoniecznie prostymi odpowiedziami 
+                       
         .container
             !=messages('message', locals)
             if errors
@@ -44,7 +40,7 @@ html
             br
             hr
             footer
-                p Copyright &copy; 2019
+                p Copyright &copy; 2019 Kszꓘ
         script(src='/bower_components/jquery/dist/jquery.js')
         script(src='/bower_components/bootstrap/dist/js/bootstrap.js')
         script(src='/js/main.js')

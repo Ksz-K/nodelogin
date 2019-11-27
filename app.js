@@ -91,7 +91,7 @@ app.get("/", (req, res) => {
       console.log(err);
     } else {
       res.render("index", {
-        title: "Articles",
+        title: "Wybierz interesujące Cię pytanie",
         articles: articles
       });
     }
@@ -130,6 +130,6 @@ app.use("/articles", articles);
 app.use("/users", users);
 
 //start server
-app.listen(3000, () => {
-  console.log("serwer slucha na porcie 3000...");
+app.listen(80, () => {
+  console.log("serwer slucha na porcie 80...");
 });

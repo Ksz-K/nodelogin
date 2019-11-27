@@ -9,3 +9,18 @@
   background-color: #dff0d8;
   border: #d6e9c6;
 }
+
+nav a img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+
+.navbar-right li {
+  color: #ffffff;
+  font-size: 1.7rem;
+  font-style: italic;
+  background: #232323;
+  text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #49ff18, 0 0 30px #49ff18, 0 0 40px #49ff18,
+    0 0 55px #49ff18, 0 0 75px #49ff18;
+}
